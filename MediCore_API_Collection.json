@@ -1,0 +1,980 @@
+{
+	"info": {
+		"_postman_id": "12345678-1234-1234-1234-123456789abc",
+		"name": "MediCore API - Healthcare System",
+		"description": "Complete API collection for MediCore Healthcare System with JWT authentication, role-based access control, and comprehensive medical management features.\n\n## Authentication Flow\n1. Login with credentials\n2. Copy Access Token to Authorization header\n3. Use Refresh Token when Access Token expires\n4. Logout to blacklist tokens\n\n## Test Accounts\n- **Admin**: admin / admin123\n- **Doctor**: dr.nguyen / doctor123\n- **Patient**: patient1 / patient123",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentication",
+			"item": [
+				{
+					"name": "Login - Admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.success && response.data) {",
+									"        pm.globals.set('accessToken', response.data.accessToken);",
+									"        pm.globals.set('refreshToken', response.data.refreshToken);",
+									"        console.log('✅ Login successful, tokens saved');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"admin123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Doctor",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.success && response.data) {",
+									"        pm.globals.set('doctorAccessToken', response.data.accessToken);",
+									"        pm.globals.set('doctorRefreshToken', response.data.refreshToken);",
+									"        console.log('✅ Doctor login successful, tokens saved');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"dr.nguyen\",\n    \"password\": \"doctor123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login - Patient",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.success && response.data) {",
+									"        pm.globals.set('patientAccessToken', response.data.accessToken);",
+									"        pm.globals.set('patientRefreshToken', response.data.refreshToken);",
+									"        console.log('✅ Patient login successful, tokens saved');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"patient1\",\n    \"password\": \"patient123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/login",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Refresh Access Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    if (response.success && response.data) {",
+									"        pm.globals.set('accessToken', response.data.accessToken);",
+									"        console.log('✅ Access token refreshed successfully');",
+									"    }",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/refresh",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"refreshToken\": \"{{refreshToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/auth/logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Test Blacklisted Token (Should Fail)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "👨‍💼 Admin Management",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create New Doctor",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"dr.new\",\n    \"password\": \"doctor123\",\n    \"fullName\": \"Dr. New Doctor\",\n    \"email\": \"new.doctor@medicore.com\",\n    \"phoneNumber\": \"0999888777\",\n    \"specialization\": \"General Medicine\",\n    \"licenseNumber\": \"LIC004\",\n    \"experienceYears\": 5\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/doctors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"doctors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get All Doctors",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/doctors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"doctors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Force Logout User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users/patient1/force-logout",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users",
+								"patient1",
+								"force-logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "👨‍⚕️ Doctor Operations",
+			"item": [
+				{
+					"name": "Get Today's Appointments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{doctorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/doctor/appointments/today",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"doctor",
+								"appointments",
+								"today"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Appointments by Date",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{doctorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/doctor/appointments?date=2024-06-07 10:00:00",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"doctor",
+								"appointments"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "2024-06-07 10:00:00"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Appointment Status",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{doctorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/doctor/appointments/1/status?status=COMPLETED&diagnosis=Patient is healthy, prescribed vitamins",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"doctor",
+								"appointments",
+								"1",
+								"status"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "COMPLETED"
+								},
+								{
+									"key": "diagnosis",
+									"value": "Patient is healthy, prescribed vitamins"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Prescription",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{doctorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"patientId\": 2,\n    \"appointmentId\": 1,\n    \"notes\": \"Take with food. Come back in 2 weeks for follow-up.\",\n    \"items\": [\n        {\n            \"medicineId\": 1,\n            \"quantity\": 20,\n            \"dosage\": \"1 tablet twice daily\",\n            \"durationDays\": 10,\n            \"instructions\": \"Take after meals\"\n        },\n        {\n            \"medicineId\": 3,\n            \"quantity\": 15,\n            \"dosage\": \"1 tablet when needed for pain\",\n            \"durationDays\": 7,\n            \"instructions\": \"Do not exceed 3 tablets per day\"\n        }\n    ]\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/doctor/prescriptions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"doctor",
+								"prescriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Prescriptions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{doctorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/doctor/prescriptions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"doctor",
+								"prescriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Available Medicines",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{doctorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/doctor/medicines",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"doctor",
+								"medicines"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Search Medicines",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{doctorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/doctor/medicines/search?name=para",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"doctor",
+								"medicines",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": "para"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🏥 Patient Operations",
+			"item": [
+				{
+					"name": "Create Appointment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{patientAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"doctorId\": 1,\n    \"appointmentDate\": \"2024-06-08 14:30:00\",\n    \"notes\": \"Regular checkup and blood pressure monitoring\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/patient/appointments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"patient",
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Appointments",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{patientAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/patient/appointments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"patient",
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Appointment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{patientAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/patient/appointments/1/cancel",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"patient",
+								"appointments",
+								"1",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Available Doctors",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{patientAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/patient/doctors",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"patient",
+								"doctors"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Doctors by Specialization",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{patientAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/patient/doctors/specialization/Cardiology",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"patient",
+								"doctors",
+								"specialization",
+								"Cardiology"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get My Prescriptions",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{patientAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/patient/prescriptions",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"patient",
+								"prescriptions"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Prescription Details",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{patientAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/patient/prescriptions/1",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"patient",
+								"prescriptions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🚫 Security Test Cases",
+			"item": [
+				{
+					"name": "Patient Try Access Admin API (Should Fail)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{patientAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Doctor Try Access Admin API (Should Fail)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{doctorAccessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/admin/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "No Token API Call (Should Fail)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/patient/appointments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"patient",
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invalid Token API Call (Should Fail)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "invalid.jwt.token",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/patient/appointments",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"patient",
+								"appointments"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"type": "string"
+		}
+	]
+}
